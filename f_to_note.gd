@@ -17,6 +17,12 @@ class Note:
 	func _to_string():
 		return note + str(oct)
 
+static func stepsFromMiddleCToNote(steps: int) -> Note:
+	var oct = 4 + floor(steps / 8)
+	var note_index = posmod(steps, 8)
+	
+	return Note.new(oct, NOTES[note_index])
+
 static func freqToNote(freq) -> Note:
 	assert(freq > MIN_FREQ, 'Frequency must be greater than 27.5Hz')
 	assert(freq < MAX_FREQ, 'Frequency must be less than 14080Hz')
@@ -25,9 +31,4 @@ static func freqToNote(freq) -> Note:
 	# ln(fn) = ln(f0) + n ln(a)
 	var n = (log(freq) - log(A4)) / log(a)
 	var steps_from_middle_c = stepify(n, 1.0)
-	
-	var oct = 4 + floor(steps_from_middle_c / 8)
-	var note_index = posmod(steps_from_middle_c, 8)
-	
-	#return NOTES[note_index] + str(oct)
-	return Note.new(oct, NOTES[note_index])
+	return stepsFromMiddleCToNote(steps_from_middle_c)

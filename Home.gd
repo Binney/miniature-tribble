@@ -41,26 +41,26 @@ const HEIGHT = 100
 
 const MIN_DB = 60
 
-var current_note
+var w = 20
 
 func _draw():
-	#warning-ignore:integer_division
-	var w = WIDTH / VU_COUNT
-	var prev_hz = 0
-	var highest_magnitude = 0
-	var best_note = 440
-	for i in range(1, VU_COUNT+1):
-		var hz = i * FREQ_MAX / VU_COUNT;
+	var hz = FToNote.A4
+	var loudestMagnitudeYet = 0
+	var bestNote = 0
+	var loudestHz = 0
+	for i in range(0, 48):
+		var prev_hz = hz
+		hz = prev_hz * FToNote.a
 		var magnitude: float = spectrum.get_magnitude_for_frequency_range(prev_hz, hz).length()
 		var energy = clamp((MIN_DB + linear2db(magnitude)) / MIN_DB, 0, 1)
 		var height = energy * HEIGHT
 		draw_rect(Rect2(w * i, HEIGHT - height, w, height), Color.white)
-		prev_hz = hz
-		if magnitude > highest_magnitude:
-			best_note = hz
-			highest_magnitude = magnitude
-	$Label.text = str(best_note) + 'Hz'
-	$NoteLabel.text = FToNote.freqToNote(best_note).to_string() + ' (I think)'
+		if magnitude > loudestMagnitudeYet:
+			loudestMagnitudeYet = magnitude
+			bestNote = i
+			loudestHz = hz
+	$Label.text = str(loudestHz) + 'Hz'
+	$NoteLabel.text = FToNote.stepsFromMiddleCToNote(bestNote).to_string()
 
 func _process(_delta):
 	update()
