@@ -1,0 +1,4 @@
+# Thanks to https://github.com/github/gitignore/blob/main/Godot.gitignore
+.import/
+export.cfg
+export_presets.cfg
